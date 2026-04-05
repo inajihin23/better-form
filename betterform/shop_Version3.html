@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Shop | Better Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<header class="navbar">
+  <img src="img/logo-betterform.png" alt="Better Form Logo" class="logo"/>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="shop.html" class="active">Shop</a>
+    <a href="about.html">About</a>
+    <a href="cart.html" class="cart-icon">Cart</a>
+  </nav>
+</header>
+<main class="shop-page">
+  <h1 class="section-title">Shop Collection</h1>
+  <div class="shop-categories">
+    <button onclick="filterCategory('all')" class="cat-btn active">All</button>
+    <button onclick="filterCategory('baggy')" class="cat-btn">Baggy Pants</button>
+    <button onclick="filterCategory('tee')" class="cat-btn">Oversize T-Shirt</button>
+  </div>
+  <div class="products-grid" id="shop-grid"></div>
+</main>
+<footer>
+  <div>© 2026 Better Form®<span class="footer-dot">•</span>Minimalist Streetwear for Men</div>
+</footer>
+<script src="script.js"></script>
+<script>
+  // basic frontend shop list (edit/expand in script.js for cart system)
+  const products = [
+    {
+      id: 1,
+      category: 'baggy',
+      name: "Baggy Pants",
+      img: 'img/sample-baggy.jpg',
+      price: 320000,
+      desc: "Celana longgar cutting modern dengan style maskulin, cocok untuk latihan intens maupun gaya santai urban. Warna netral."
+    },
+    {
+      id: 2,
+      category: 'tee',
+      name: "Oversize T-Shirt",
+      img: 'img/sample-tee.jpg',
+      price: 180000,
+      desc: "T-shirt oversized, bahan premium. Minimalis, elegan, bold. Cocok streetwear atau daily workout."
+    },
+  ];
+  let filter = 'all';
+  function renderProducts() {
+    let html = '';
+    products.filter(p => filter==='all'||p.category===filter).forEach(p => {
+      html += `
+      <div class="product-card fade-in">
+        <img src="${p.img}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <div class="price">Rp${p.price.toLocaleString('id-ID')}</div>
+        <p>${p.desc}</p>
+        <a href="product.html?id=${p.id}" class="btn-main">Lihat Detail</a>
+        <button onclick="addToCart(${p.id})" class="btn-secondary">Add to Cart</button>
+      </div>`;
+    });
+    document.getElementById('shop-grid').innerHTML = html;
+    document.querySelectorAll('.fade-in').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), i * 120 + 80);
+    });
+  }
+  function filterCategory(cat) {
+    filter = cat;
+    document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.cat-btn[onclick*="${cat}"]`).classList.add('active');
+    renderProducts();
+  }
+  function addToCart(id) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart.push(id);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("Produk ditambahkan ke keranjang!");
+  }
+  renderProducts();
+</script>
+</body>
+</html>

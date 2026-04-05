@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Product | Better Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<header class="navbar">
+  <img src="img/logo-betterform.png" alt="Better Form Logo" class="logo"/>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="shop.html" class="active">Shop</a>
+    <a href="about.html">About</a>
+    <a href="cart.html" class="cart-icon">Cart</a>
+  </nav>
+</header>
+<main class="product-detail-page">
+  <div id="product-detail"></div>
+</main>
+<footer>
+  <div>© 2026 Better Form®<span class="footer-dot">•</span>Minimalist Streetwear for Men</div>
+</footer>
+<script>
+// same products data for sample (normally you fetch real data)
+const products = [
+  {
+    id: 1,
+    category: 'baggy',
+    name: "Baggy Pants",
+    img: 'img/sample-baggy.jpg',
+    price: 320000,
+    desc: "Celana longgar cutting modern dengan style maskulin, cocok untuk latihan intens maupun gaya santai urban. Warna netral. <b>Limited stock!</b>"
+  },
+  {
+    id: 2,
+    category: 'tee',
+    name: "Oversize T-Shirt",
+    img: 'img/sample-tee.jpg',
+    price: 180000,
+    desc: "T-shirt oversized, bahan premium. Minimalis, elegan, bold. Cocok streetwear atau daily workout."
+  },
+];
+const sizeChart = {
+  "Baggy Pants": { S: "Lingkar pinggang 74-80cm, Panjang 98cm", M: "80-86cm, 100cm", L: "86-92cm, 102cm" },
+  "Oversize T-Shirt": { S: "Lingkar dada 108cm, Panjang 74cm", M: "112cm, 77cm", L: "116cm, 79cm"}
+};
+const urlParams = new URLSearchParams(window.location.search);
+const pid = parseInt(urlParams.get('id'));
+const prod = products.find(p=>p.id===pid) || products[0];
+
+let sizeSel = "M";
+document.getElementById('product-detail').innerHTML = `
+  <div class="prod-detail-box fade-in">
+    <img src="${prod.img}" alt="${prod.name}" class="prod-main-img">
+    <div>
+      <h1>${prod.name}</h1>
+      <div class="price" style="margin-bottom:12px">Rp${prod.price.toLocaleString('id-ID')}</div>
+      <p>${prod.desc}</p>
+      <h3>Size Chart</h3>
+      <ul>
+      <li>S: ${sizeChart[prod.name].S}</li>
+      <li>M: ${sizeChart[prod.name].M}</li>
+      <li>L: ${sizeChart[prod.name].L}</li>
+      </ul>
+      <div>
+        <label>Pilih ukuran:</label>
+        <select id="sizesel">${Object.keys(sizeChart[prod.name]).map(s=>`<option ${s==sizeSel?'selected':''}>${s}</option>`).join('')}</select>
+      </div>
+      <button style="margin-top:18px" class="btn-main" onclick="addToCart(${prod.id})">Add to Cart</button>
+    </div>
+  </div>
+`;
+document.querySelector('.fade-in').classList.add('visible');
+function addToCart(id){
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const chosenSize = document.getElementById("sizesel").value;
+  cart.push({id, size: chosenSize});
+  localStorage.setItem("cart", JSON.stringify(cart));
+  alert("Produk berhasil ditambahkan ke keranjang dengan size " + chosenSize);
+}
+</script>
+</body>
+</html>
